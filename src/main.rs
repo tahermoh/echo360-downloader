@@ -1,5 +1,11 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
+
+use eframe::egui::{self, RichText};
 use thirtyfour::prelude::*;
 use tokio::time::{sleep, Duration};
+
+pub mod task;
+use task::{Task, TaskState};
 
 #[derive(Debug)]
 pub enum Error {
@@ -12,12 +18,95 @@ impl From<WebDriverError> for Error {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
+fn main() {
+    let rt = tokio::runtime::Runtime::new().expect("Unable to create background threads");
+    let _enter = rt.enter();
 
-    dbg!(login().await?);
+    env_logger::init();
+    let options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default(),
+        ..Default::default()
+    };
 
-    Ok(())
+    eframe::run_native(
+        "Echo360 Video Downloader",
+        options,
+        Box::new(|cc| {
+            // Image support
+            egui_extras::install_image_loaders(&cc.egui_ctx);
+
+            Box::new(App::default())
+        }),
+    )
+    .unwrap();
+}
+
+struct App {
+    cookie: Task<Result<Cookie, Error>>,
+    //   runtime: Runtime,
+}
+
+impl Default for App {
+    fn default() -> Self {
+        Self {
+            cookie: Task::new(),
+        }
+    }
+}
+
+impl eframe::App for App {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::TopBottomPanel::top("Top Panel").show(ctx, |ui| {
+            ui.add_space(10.0);
+
+            ui.vertical_centered(|ui| match self.cookie.state() {
+                TaskState::NotFired => {
+                    if ui
+                        .add(egui::Button::new(
+                            RichText::new("Log in to see Courses")
+                                .size(32.0)
+                                .heading()
+                                .strong(),
+                        ))
+                        .clicked()
+                    {
+                        self.cookie.fire_async(async move { login().await });
+                    };
+                }
+                TaskState::Loading(_) => {
+                    ui.add(egui::Spinner::new().size(39.0));
+                }
+                TaskState::Ok(cookie) => {
+                    // Check if log in finished
+                    if cookie.is_ok() {
+                        ui.label(egui::RichText::new("Logged In!").size(32.0));
+                    } else {
+                        if ui
+                            .add(egui::Button::new(
+                                RichText::new("Log in to see Courses")
+                                    .size(32.0)
+                                    .heading()
+                                    .strong(),
+                            ))
+                            .clicked()
+                        {
+                            self.cookie.fire_async(async move { login().await });
+                        };
+                    }
+                }
+            });
+
+            ui.add_space(10.0);
+        });
+
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.vertical_centered(|ui| {
+                if ui.label("test").clicked() {
+                    println!("hm");
+                };
+            });
+        });
+    }
 }
 
 async fn login() -> Result<Cookie, Error> {
@@ -43,4 +132,3 @@ async fn login() -> Result<Cookie, Error> {
 
     Ok(cookie)
 }
-
