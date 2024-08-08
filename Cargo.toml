@@ -1,0 +1,12 @@
+[package]
+name = "echo360-downloader"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+thirtyfour = "0.32.0-rc.9"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.10.8", features = ["blocking"] }
+scraper = "0.12.0"
