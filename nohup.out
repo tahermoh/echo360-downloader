@@ -1334,3 +1334,189 @@ error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 
 [2024-08-08T18:14:32Z ERROR sctk_adwaita::pointer] Failed to set cursor
 [2024-08-08T18:15:18Z ERROR sctk_adwaita::pointer] Failed to set cursor
 [2024-08-08T18:15:19Z ERROR sctk_adwaita::pointer] Failed to set cursor
+[Running 'cargo run']
+[H[2J[3J   Compiling tokio v0.2.25
+   Compiling tokio-util v0.3.1
+   Compiling tokio-tls v0.3.1
+   Compiling h2 v0.2.7
+   Compiling hyper v0.13.10
+   Compiling hyper-tls v0.4.3
+   Compiling reqwest v0.10.10
+   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+    Finished dev [unoptimized + debuginfo] target(s) in 30.42s
+     Running `target/debug/echo360-downloader`
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: visibility `pub` is not followed by an item
+  --> src/main.rs:10:1
+   |
+10 | pub
+   | ^^^ the visibility
+   |
+   = help: you likely meant to define an item, e.g., `pub fn foo() {}`
+
+error: expected item, found `#`
+  --> src/main.rs:12:1
+   |
+12 | #[derive(Debug)]
+   | ^ expected item
+   |
+   = note: for a full list of items that can appear in modules, see <https://doc.rust-lang.org/reference/items.html>
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 2 previous errors
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: visibility `pub` is not followed by an item
+  --> src/main.rs:10:1
+   |
+10 | pub
+   | ^^^ the visibility
+   |
+   = help: you likely meant to define an item, e.g., `pub fn foo() {}`
+
+error: expected item, found `#`
+  --> src/main.rs:12:1
+   |
+12 | #[derive(Debug)]
+   | ^ expected item
+   |
+   = note: for a full list of items that can appear in modules, see <https://doc.rust-lang.org/reference/items.html>
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 2 previous errors
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error[E0583]: file not found for module `courses`
+  --> src/main.rs:10:1
+   |
+10 | mod courses;
+   | ^^^^^^^^^^^^
+   |
+   = help: to create the module `courses`, create file "src/courses.rs" or "src/courses/mod.rs"
+   = note: if there is a `mod courses` elsewhere in the crate already, import it with `use crate::...` instead
+
+For more information about this error, try `rustc --explain E0583`.
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 1 previous error
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: expected one of `!` or `::`, found `course`
+ --> src/courses/mod.rs:1:8
+  |
+1 | Struct course {
+  |        ^^^^^^ expected one of `!` or `::`
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 1 previous error
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: expected one of `!` or `::`, found `course`
+ --> src/courses/mod.rs:1:8
+  |
+1 | Struct course {
+  |        ^^^^^^ expected one of `!` or `::`
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 1 previous error
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: expected one of `!` or `::`, found `Course`
+ --> src/courses/mod.rs:1:8
+  |
+1 | Struct Course {
+  |        ^^^^^^ expected one of `!` or `::`
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 1 previous error
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+warning: methods `get` and `get_no_stale` are never used
+  --> src/task.rs:63:9
+   |
+58 | impl<T> TaskState<T> {
+   | -------------------- methods in this implementation
+...
+63 |     pub fn get(self) -> Option<T> {
+   |            ^^^
+...
+75 |     pub fn get_no_stale(self) -> Option<T> {
+   |            ^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: methods `fire` and `with_debounce` are never used
+   --> src/task.rs:121:9
+    |
+84  | / impl<T> Task<T>
+85  | | where
+86  | |     T: Send + 'static,
+    | |______________________- methods in this implementation
+...
+121 |       pub fn fire<F>(&mut self, func: F)
+    |              ^^^^
+...
+156 |       pub fn with_debounce(mut self, duration: Duration) -> Self {
+    |              ^^^^^^^^^^^^^
+
+warning: struct `Course` is never constructed
+ --> src/courses/mod.rs:1:8
+  |
+1 | struct Course {
+  |        ^^^^^^
+
+warning: `echo360-downloader` (bin "echo360-downloader") generated 3 warnings
+    Finished dev [unoptimized + debuginfo] target(s) in 10.09s
+     Running `target/debug/echo360-downloader`
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+error: expected type, found `}`
+ --> src/courses/mod.rs:5:1
+  |
+1 | struct Course {
+  |        ------ while parsing this struct
+...
+5 | }
+  | ^ expected type
+
+error: could not compile `echo360-downloader` (bin "echo360-downloader") due to 1 previous error
+[Finished running. Exit status: 101]
+[Running 'cargo run']
+[H[2J[3J   Compiling echo360-downloader v0.1.0 (/home/taherm/projects/echo360-downloader)
+warning: methods `get` and `get_no_stale` are never used
+  --> src/task.rs:63:9
+   |
+58 | impl<T> TaskState<T> {
+   | -------------------- methods in this implementation
+...
+63 |     pub fn get(self) -> Option<T> {
+   |            ^^^
+...
+75 |     pub fn get_no_stale(self) -> Option<T> {
+   |            ^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: methods `fire` and `with_debounce` are never used
+   --> src/task.rs:121:9
+    |
+84  | / impl<T> Task<T>
+85  | | where
+86  | |     T: Send + 'static,
+    | |______________________- methods in this implementation
+...
+121 |       pub fn fire<F>(&mut self, func: F)
+    |              ^^^^
+...
+156 |       pub fn with_debounce(mut self, duration: Duration) -> Self {
+    |              ^^^^^^^^^^^^^
+
+warning: struct `Course` is never constructed
+ --> src/courses/mod.rs:1:8
+  |
+1 | struct Course {
+  |        ^^^^^^
+
+warning: `echo360-downloader` (bin "echo360-downloader") generated 3 warnings
+    Finished dev [unoptimized + debuginfo] target(s) in 8.85s
+     Running `target/debug/echo360-downloader`

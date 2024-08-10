@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 thirtyfour = "0.32.0-rc.9"
 tokio = { version = "1", features = ["full"] }
-reqwest = { version = "0.10.8" }
 
 # GUI
 eframe = "0.24.1"
@@ -17,3 +16,11 @@ env_logger = { version = "0.10", default-features = false, features = [
     "auto-color",
     "humantime",
 ] }
+
+# Data
+reqwest = { version = "0.10.8", features = ["default", "json", "blocking"] }
+serde = "1.0.205"
+serde_json = "1.0.122"
+
+derive_more = { version = "1.0.0", features = ["from"] }
+dotenv = "0.15.0"
