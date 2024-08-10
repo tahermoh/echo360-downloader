@@ -1,6 +1,8 @@
 use reqwest::blocking::Client;
 use serde::Deserialize;
 
+use super::Result;
+
 #[derive(Debug, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Section {
@@ -37,21 +39,10 @@ struct EnrollmentsResponse {
     data: Vec<Enrollments>,
 }
 
-#[derive(Debug)]
-pub enum Error {
-    REQUEST(reqwest::Error),
-}
-
-impl From<reqwest::Error> for Error {
-    fn from(err: reqwest::Error) -> Self {
-        Self::REQUEST(err)
-    }
-}
-
 impl Enrollments {
     const REQUEST_PATH: &'static str = "/user/enrollments";
 
-    pub fn get(client: &Client, domain: impl Into<String>) -> Result<Self, Error> {
+    pub fn get(client: &Client, domain: impl Into<String>) -> Result<Self> {
         let EnrollmentsResponse { mut data, .. } = client
             .get(&(domain.into() + Self::REQUEST_PATH))
             .send()
@@ -60,6 +51,5 @@ impl Enrollments {
             .unwrap();
 
         Ok(dbg!(data.remove(0)))
-
     }
 }

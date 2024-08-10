@@ -24,3 +24,4 @@ serde_json = "1.0.122"
 
 derive_more = { version = "1.0.0", features = ["from"] }
 dotenv = "0.15.0"
+chrono = "0.4.38"

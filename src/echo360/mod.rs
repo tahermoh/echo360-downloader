@@ -1,19 +1,31 @@
 mod error;
+use std::cell::RefCell;
+
 use error::Result;
 
 pub mod courses;
 use courses::Enrollments;
 
+pub mod videos;
+
 use dotenv::dotenv;
 use reqwest::{blocking::Client, header};
 use thirtyfour::{DesiredCapabilities, WebDriver};
-use tokio::{sync::OnceCell, time::{sleep, Duration}};
+use tokio::{
+    sync::OnceCell,
+    time::{sleep, Duration},
+};
+
+use self::videos::{Video, VideoData};
 
 #[derive(Default)]
 pub struct Echo360 {
     pub client: Client,
     pub domain: String,
     pub enrollments: OnceCell<Enrollments>,
+    pub selected: RefCell<String>,
+    pub videos: RefCell<Vec<VideoData>>,
+    pub download_path: RefCell<String>,
 }
 
 impl Echo360 {

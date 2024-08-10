@@ -3,9 +3,9 @@
 use eframe::egui;
 use thirtyfour::prelude::*;
 
-mod task;
 mod app;
 mod echo360;
+mod task;
 
 use app::App;
 
@@ -42,5 +42,3 @@ fn main() {
     )
     .unwrap();
 }
-
-
