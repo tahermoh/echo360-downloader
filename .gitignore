@@ -2,3 +2,5 @@
 *.mp4
 .env
 sample.json
+nohup.out
+*.out
