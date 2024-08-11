@@ -1,7 +1,6 @@
 mod error;
 use std::{cell::{OnceCell, RefCell}, thread::sleep, time::Duration};
 
-use eframe::egui::TextBuffer;
 use error::Result;
 
 pub mod courses;
@@ -10,8 +9,8 @@ use courses::Enrollments;
 pub mod videos;
 
 use dotenv::dotenv;
-use reqwest::{blocking::Client, header};
-use thirtyfour::{support::block_on, DesiredCapabilities, WebDriver};
+use reqwest::{Client, header};
+//use thirtyfour::{support::block_on, DesiredCapabilities, WebDriver};
 
 use self::videos::VideoData;
 
@@ -36,6 +35,7 @@ impl Echo360 {
             (Ok(cookie), Ok(domain)) => (cookie, domain),
             _ => {
                 // env variables aren't set, use browser to log in
+                /*
                 let caps = DesiredCapabilities::chrome();
                 let driver = block_on(WebDriver::new("http://localhost:9515", caps))?;
 
@@ -57,13 +57,15 @@ impl Echo360 {
                 block_on(driver.quit())?;
 
                 dbg!(("PLAY_SESSION=".to_owned() + cookie.value.as_str(), "https://".to_owned() + domain.as_str()))
+                */
+                todo!();
             }
         };
 
         let mut headers = header::HeaderMap::new();
         headers.insert("Cookie", cookie.parse().unwrap());
 
-        let client = reqwest::blocking::Client::builder()
+        let client = Client::builder()
             .default_headers(headers)
             .build()?;
 

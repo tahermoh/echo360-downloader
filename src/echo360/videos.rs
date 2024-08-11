@@ -1,4 +1,4 @@
-use reqwest::blocking::Client;
+use reqwest::Client;
 use serde::Deserialize;
 
 use super::Result;
@@ -60,21 +60,23 @@ pub enum VideoData {
 }
 
 impl Video {
-    pub fn get_videos(
+    pub async fn get_videos(
         client: &Client,
         domain: impl Into<String>,
         section_id: &String,
     ) -> Result<Vec<VideoData>> {
-        let VideosResponse { data, .. } = dbg!(dbg!(client
-            .get(dbg!(&format!(
+        let VideosResponse { data, .. } = client
+            .get(&format!(
                 "{}/section/{}/syllabus",
                 domain.into(),
                 section_id
-            )))
+            ))
             .send()
-            .unwrap())
-        .json::<VideosResponse>())
-        .unwrap();
+            .await
+            .unwrap()
+            .json::<VideosResponse>()
+            .await
+            .unwrap();
 
         Ok(dbg!(data))
     }

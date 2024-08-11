@@ -98,7 +98,7 @@ impl App {
         });
     }
 
-    fn load_courses(&mut self, ctx: &Context) {
+    async fn load_courses(&mut self, ctx: &Context) {
         egui::TopBottomPanel::top("Top Panel").show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(10.0);
@@ -116,12 +116,16 @@ impl App {
 
         echo360
             .enrollments
-            .set(Enrollments::get(&echo360.client, &echo360.domain).unwrap())
+            .set(
+                Enrollments::get(&echo360.client, &echo360.domain)
+                    .await
+                    .unwrap(),
+            )
             .unwrap();
         self.state = AppState::SelectingCourse;
     }
 
-    fn load_videos(&mut self, ctx: &Context) {
+    async fn load_videos(&mut self, ctx: &Context) {
         egui::TopBottomPanel::top("Top Panel").show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(10.0);
@@ -142,6 +146,7 @@ impl App {
             &echo360.domain,
             &echo360.selected.borrow()
         )
+        .await
         .unwrap()));
         self.state = AppState::SelectingVideos;
     }
@@ -283,9 +288,9 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &Context, _frame: &mut eframe::Frame) {
         match self.state {
             AppState::LoggingIn => self.login_screen(ctx),
-            AppState::LoadingCourses => self.load_courses(ctx),
+            AppState::LoadingCourses => self.load_courses(ctx).await,
             AppState::SelectingCourse => self.course_select_screen(ctx),
-            AppState::LoadingVideos => self.load_videos(ctx),
+            AppState::LoadingVideos => self.load_videos(ctx).await,
             AppState::SelectingVideos => self.video_select_screen(ctx),
         };
     }

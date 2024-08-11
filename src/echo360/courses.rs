@@ -1,4 +1,4 @@
-use reqwest::blocking::Client;
+use reqwest::Client;
 use serde::Deserialize;
 
 use super::Result;
@@ -42,12 +42,14 @@ struct EnrollmentsResponse {
 impl Enrollments {
     const REQUEST_PATH: &'static str = "/user/enrollments";
 
-    pub fn get(client: &Client, domain: impl Into<String>) -> Result<Self> {
+    pub async fn get(client: &Client, domain: impl Into<String>) -> Result<Self> {
         let EnrollmentsResponse { mut data, .. } = dbg!(client
             .get(&(domain.into() + Self::REQUEST_PATH))
             .send()
+            .await
             .unwrap())
         .json::<EnrollmentsResponse>()
+        .await
         .unwrap();
 
         Ok(dbg!(data.remove(0)))
