@@ -1,6 +1,7 @@
 mod error;
-use std::cell::RefCell;
+use std::{cell::{OnceCell, RefCell}, thread::sleep, time::Duration};
 
+use eframe::egui::TextBuffer;
 use error::Result;
 
 pub mod courses;
@@ -10,13 +11,9 @@ pub mod videos;
 
 use dotenv::dotenv;
 use reqwest::{blocking::Client, header};
-use thirtyfour::{DesiredCapabilities, WebDriver};
-use tokio::{
-    sync::OnceCell,
-    time::{sleep, Duration},
-};
+use thirtyfour::{support::block_on, DesiredCapabilities, WebDriver};
 
-use self::videos::{Video, VideoData};
+use self::videos::VideoData;
 
 #[derive(Default)]
 pub struct Echo360 {
@@ -29,7 +26,7 @@ pub struct Echo360 {
 }
 
 impl Echo360 {
-    pub async fn login() -> Result<Self> {
+    pub fn login() -> Result<Self> {
         dotenv().ok();
 
         let (cookie, domain) = match (
@@ -40,26 +37,26 @@ impl Echo360 {
             _ => {
                 // env variables aren't set, use browser to log in
                 let caps = DesiredCapabilities::chrome();
-                let driver = WebDriver::new("http://localhost:9515", caps).await?;
+                let driver = block_on(WebDriver::new("http://localhost:9515", caps))?;
 
-                driver.goto("https://login.echo360.org/login").await?;
+                block_on(driver.goto("https://login.echo360.org/login"))?;
 
                 let domain = loop {
                     // Busy loop until logged in
-                    let url = driver.current_url().await?;
+                    let url = block_on(driver.current_url())?;
                     if let Some(domain) = url.domain() {
                         if domain.starts_with("echo360") {
                             break domain.to_owned();
                         };
                     }
-                    sleep(Duration::from_millis(1000)).await;
+                    sleep(Duration::from_millis(1000));
                 };
 
-                let cookie = driver.get_named_cookie("PLAY_SESSION").await?;
+                let cookie = block_on(driver.get_named_cookie("PLAY_SESSION"))?;
 
-                driver.quit().await?;
+                block_on(driver.quit())?;
 
-                (cookie.value, "https://".to_owned() + domain.as_str())
+                dbg!(("PLAY_SESSION=".to_owned() + cookie.value.as_str(), "https://".to_owned() + domain.as_str()))
             }
         };
 

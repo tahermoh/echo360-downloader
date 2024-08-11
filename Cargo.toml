@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 thirtyfour = "0.32.0-rc.9"
-tokio = { version = "1", features = ["full"] }
 
 # GUI
 eframe = "0.24.1"

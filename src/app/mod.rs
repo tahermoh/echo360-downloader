@@ -1,15 +1,12 @@
 mod error;
 // use error::Result;
 
-use std::ops::DerefMut;
+use std::{cell::OnceCell, ops::DerefMut};
 
-use crate::{
-    echo360::{
-        courses::Enrollments,
-        videos::{LessonData, Video, VideoData},
-        Echo360,
-    },
-    task::{Task, TaskState},
+use crate::echo360::{
+    courses::Enrollments,
+    videos::{Video, VideoData},
+    Echo360,
 };
 use chrono::{DateTime, Local};
 use eframe::egui::{self, Context, RichText, Ui};
@@ -17,7 +14,7 @@ use egui_extras::{Column, TableRow};
 
 #[derive(Default)]
 pub struct App {
-    echo360: Task<Echo360>,
+    echo360: OnceCell<Echo360>,
     state: AppState,
 }
 
@@ -33,7 +30,7 @@ enum AppState {
 
 impl App {
     fn login_screen(&mut self, ctx: &Context) {
-        let login_button = |echo360: &mut Task<Echo360>, ui: &mut Ui| {
+        let mut login_button = |echo360: &mut OnceCell<Echo360>, ui: &mut Ui| {
             if ui
                 .add(egui::Button::new(
                     RichText::new("Log in to see Courses")
@@ -43,26 +40,18 @@ impl App {
                 ))
                 .clicked()
             {
-                echo360.fire_async(async move { Echo360::login().await.unwrap() });
+                let _ = echo360.set(Echo360::login().unwrap());
+                ui.add(egui::Spinner::new().size(39.0));
+                self.state = AppState::LoadingCourses;
             };
         };
 
         egui::TopBottomPanel::top("Top Panel").show(ctx, |ui| {
-            ui.add_space(10.0);
-
-            ui.vertical_centered(|ui| match self.echo360.state() {
-                TaskState::NotFired => {
-                    login_button(&mut self.echo360, ui);
-                }
-                TaskState::Loading(_) => {
-                    ui.add(egui::Spinner::new().size(39.0));
-                }
-                TaskState::Ok(_) => {
-                    self.state = AppState::LoadingCourses;
-                }
+            ui.vertical_centered(|ui| {
+                ui.add_space(10.0);
+                login_button(&mut self.echo360, ui);
+                ui.add_space(10.0);
             });
-
-            ui.add_space(10.0);
         });
     }
 

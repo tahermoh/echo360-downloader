@@ -43,12 +43,12 @@ impl Enrollments {
     const REQUEST_PATH: &'static str = "/user/enrollments";
 
     pub fn get(client: &Client, domain: impl Into<String>) -> Result<Self> {
-        let EnrollmentsResponse { mut data, .. } = client
+        let EnrollmentsResponse { mut data, .. } = dbg!(client
             .get(&(domain.into() + Self::REQUEST_PATH))
             .send()
-            .unwrap()
-            .json::<EnrollmentsResponse>()
-            .unwrap();
+            .unwrap())
+        .json::<EnrollmentsResponse>()
+        .unwrap();
 
         Ok(dbg!(data.remove(0)))
     }

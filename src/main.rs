@@ -5,7 +5,7 @@ use thirtyfour::prelude::*;
 
 mod app;
 mod echo360;
-mod task;
+// mod task;
 
 use app::App;
 
@@ -21,9 +21,6 @@ impl From<WebDriverError> for Error {
 }
 
 fn main() {
-    let rt = tokio::runtime::Runtime::new().expect("Unable to create background threads");
-    let _enter = rt.enter();
-
     env_logger::init();
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default(),
