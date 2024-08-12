@@ -1,11 +1,12 @@
 mod error;
 // use error::Result;
 
-use std::{cell::OnceCell, ops::DerefMut};
+use std::{borrow::{Borrow, BorrowMut}, cell::OnceCell, ops::DerefMut};
 
 use crate::echo360::{
+    self,
     courses::Enrollments,
-    videos::{Video, VideoData},
+    videos::{LessonData, Video, VideoData},
     Echo360,
 };
 use chrono::{DateTime, Local};
@@ -87,7 +88,7 @@ impl App {
                                         .clicked()
                                     {
                                         // Select class
-                                        echo360.selected.replace(enrollment.section_id.clone());
+                                        echo360.selected.replace(enrollment.clone());
                                         self.state = AppState::LoadingVideos;
                                     }
                                 });
@@ -137,16 +138,22 @@ impl App {
 
         let echo360 = self.echo360.get().unwrap();
 
-        echo360.videos.replace(dbg!(Video::get_videos(
-            &echo360.client,
-            &echo360.domain,
-            &echo360.selected.borrow()
-        )
-        .unwrap()));
+        echo360.videos.replace(
+            Video::get_videos(
+                &echo360.client,
+                &echo360.domain,
+                &echo360.selected.borrow().section_id,
+            )
+            .unwrap(),
+        );
         self.state = AppState::SelectingVideos;
     }
 
     fn video_select_screen(&mut self, ctx: &Context) {
+        let echo360 = self.echo360.get().unwrap();
+        let mut videos = echo360.videos.borrow_mut();
+        let mut captions = echo360.captions.borrow_mut();
+
         egui::TopBottomPanel::top("Top Panel").show(ctx, |ui| {
             ui.horizontal_centered(|ui| {
                 if ui.button("Back").clicked() {
@@ -158,6 +165,7 @@ impl App {
                 });
             });
         });
+
         egui::TopBottomPanel::bottom("Bottom Panel")
             .min_height(50.)
             .show(ctx, |ui| {
@@ -174,16 +182,33 @@ impl App {
 
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         ui.add_space(20.);
-                        if ui.button("Download Videos").clicked() {};
+                        if ui.button("Download Videos").clicked() {
+                            let mut downloads: Vec<&Video> = Vec::new();
+                            // Get selected videos
+                            for video_data in videos.iter() {
+                                if let VideoData::SyllabusLessonType { lesson } = video_data {
+                                    if lesson.download {
+                                        downloads.push(&lesson);
+                                    }
+                                }
+                            }
+
+                            // Download the videos
+                            Video::download_videos(
+                                &echo360.client,
+                                &echo360.domain,
+                                &echo360.selected.borrow().course_code,
+                                &downloads,
+                                echo360.download_path.borrow().to_string(),
+                                *captions,
+                            );
+                        };
                         ui.add_space(20.);
-                        ui.add(toggle(&mut true));
+                        ui.add(toggle(&mut captions));
                         ui.label("Download Captions");
                     });
                 });
             });
-
-        let echo360 = self.echo360.get().unwrap();
-        let mut videos = echo360.videos.borrow_mut();
 
         let entry = |mut row: TableRow, lesson: &mut Video| {
             let show = lesson.has_content.clone();

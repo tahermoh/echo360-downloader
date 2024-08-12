@@ -3,11 +3,11 @@ use serde::Deserialize;
 
 use super::Result;
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Section {
     // course_id: String,
-    // course_code: String,
+    pub course_code: String,
     // course_name: String,
     // lesson_count: usize,
     pub section_id: String,

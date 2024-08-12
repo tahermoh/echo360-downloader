@@ -1,7 +1,6 @@
 mod error;
 use std::{cell::{OnceCell, RefCell}, thread::sleep, time::Duration};
 
-use eframe::egui::TextBuffer;
 use error::Result;
 
 pub mod courses;
@@ -13,16 +12,17 @@ use dotenv::dotenv;
 use reqwest::{blocking::Client, header};
 use thirtyfour::{support::block_on, DesiredCapabilities, WebDriver};
 
-use self::videos::VideoData;
+use self::{courses::Section, videos::VideoData};
 
 #[derive(Default)]
 pub struct Echo360 {
     pub client: Client,
     pub domain: String,
     pub enrollments: OnceCell<Enrollments>,
-    pub selected: RefCell<String>,
+    pub selected: RefCell<Section>,
     pub videos: RefCell<Vec<VideoData>>,
     pub download_path: RefCell<String>,
+    pub captions: RefCell<bool>,
 }
 
 impl Echo360 {
