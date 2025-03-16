@@ -10,19 +10,20 @@ pub mod videos;
 
 use dotenv::dotenv;
 use reqwest::{blocking::Client, header};
+use std::sync::Mutex;
 use thirtyfour::{support::block_on, DesiredCapabilities, WebDriver};
 
 use self::{courses::Section, videos::VideoData};
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct Echo360 {
     pub client: Client,
     pub domain: String,
-    pub enrollments: OnceCell<Enrollments>,
-    pub selected: RefCell<Section>,
-    pub videos: RefCell<Vec<VideoData>>,
-    pub download_path: RefCell<String>,
-    pub captions: RefCell<bool>,
+    pub enrollments: Mutex<Enrollments>,
+    pub selected: Mutex<Section>,
+    pub videos: Mutex<Vec<VideoData>>,
+    pub download_path: Mutex<String>,
+    pub captions: Mutex<bool>,
 }
 
 impl Echo360 {

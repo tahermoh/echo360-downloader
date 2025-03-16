@@ -1,9 +1,9 @@
 use reqwest::blocking::Client;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::Result;
 
-#[derive(Clone, Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Section {
     // course_id: String,
@@ -29,6 +29,7 @@ pub struct Section {
 #[serde(rename_all = "camelCase")]
 pub struct Enrollments {
     pub user_sections: Vec<Section>,
+
 }
 
 #[derive(Debug, Default, Deserialize)]
